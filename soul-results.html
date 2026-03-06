@@ -52,7 +52,9 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);mi
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,212,200,0.3),transparent);opacity:0;transition:opacity .2s;}
 .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.14);}
 .card:hover::before{opacity:1;}
-.card-flag-wrap{margin-bottom:.9rem;display:block;}.card-flag{font-size:2.8rem;line-height:1;margin-bottom:.8rem;display:block;}
+.card-flag-wrap{margin-bottom:.9rem;display:block;}.card-flag{margin-bottom:.9rem;display:block;}
+.card-flag img{width:72px;height:auto;border-radius:5px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 2px 12px rgba(0,0,0,0.4);}
+.card-flag .flag-fb{font-size:2.8rem;line-height:1;}
 .card-country{font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:.25rem;}
 .card-word{font-size:12px;font-style:italic;color:var(--teal);margin-bottom:.8rem;}
 .card-meta{display:flex;align-items:center;justify-content:space-between;}
