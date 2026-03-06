@@ -175,6 +175,8 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);mi
     <div class="r-actions">
       <button class="btn-primary" onclick="openShare()">📸 Share Your Result</button>
       <button class="btn-ghost" onclick="retake()">🔄 Retake Quiz</button>
+      <button class="btn-ghost" id="post-btn" onclick="handlePost()">🌍 Post Your Result</button>
+
       <button class="btn-ghost" onclick="location.href='/guess'">🎮 Play GeoQuest</button>
     </div>
   </div>
@@ -195,6 +197,23 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);mi
 </div>
 
 <script>
+const SUPABASE_URL = 'https://mjphpctvuxmbjhmcscoj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs';
+
+async function postResult(country, emoji, word, username) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/soul_results`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ country, country_emoji: emoji, word, username: username || null })
+  });
+  return res.ok;
+}
+
 // ═══════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════
@@ -668,6 +687,44 @@ try {
     window.GQ_API_KEY = window.parent.GQ_API_KEY;
   }
 } catch(e) {}
+
+async function handlePost() {
+  const btn = document.getElementById('post-btn');
+  if (!btn || !resultCountry) return;
+
+  // Ask for optional name
+  const name = prompt('Post anonymously or enter your name (optional):', '');
+  if (name === null) return; // cancelled
+
+  btn.textContent = 'Posting…';
+  btn.disabled = true;
+
+  const ok = await postResult(
+    resultCountry.name,
+    resultCountry.emoji,
+    resultCountry.word,
+    name.trim() || null
+  );
+
+  if (ok) {
+    btn.textContent = '✓ Posted!';
+    btn.style.color = '#00d4c8';
+    btn.style.borderColor = 'rgba(0,212,200,0.4)';
+    // Show link to results page
+    const actionsEl = btn.parentElement;
+    const link = document.createElement('a');
+    link.href = '/soul-results.html';
+    link.className = 'btn-ghost';
+    link.style.textDecoration = 'none';
+    link.style.textAlign = 'center';
+    link.textContent = '📊 See Everyone's Results →';
+    actionsEl.appendChild(link);
+  } else {
+    btn.textContent = '❌ Failed — try again';
+    btn.disabled = false;
+  }
+}
+
 </script>
 </body>
 </html>
